@@ -10,12 +10,12 @@ import os
 load_dotenv() # Carrega as variaveis de ambiente
 
 #configurações principais do cloudinary a aprtir da variavel de ambiente
-cloudinary.config(
-    cloud_name = os.getenv('CLOUD_NAME'),
-    api_key = os.getenv('API_KEY'),
-    api_secret =  os.getenv('API_SECRET'),
-    secure = True
-)
+# cloudinary.config(
+#     cloud_name = os.getenv('CLOUD_NAME'),
+#     api_key = os.getenv('API_KEY'),
+#     api_secret =  os.getenv('API_SECRET'),
+#     secure = True
+# )
 
 # Principal função que executa o upload de arquivos para o cloudinary
 def uploadImagem(caminho: str, Pasta: str):
