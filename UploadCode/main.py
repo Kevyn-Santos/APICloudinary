@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates as j2t
 from fastapi.responses import HTMLResponse
 
 # Importação de arquivo com o código de upload do cloudinary
-import Upload
+import UploadCode.Upload as Upload
 
 # Bibliotecas para manipulação de arquivos de sistema
 import shutil 
