@@ -1,0 +1,15 @@
+{
+          "builds": [
+            {
+              "src": "UploadCode/main.py",
+              "use": "@vercel/python",
+              "config": { "maxLambdaSize": "15mb", "runtime": "python3.12.6" }
+            }
+          ],
+          "routes": [
+            {
+              "src": "/(.*)",
+              "dest": "UploadCode/main.py"
+            }
+          ]
+        }
