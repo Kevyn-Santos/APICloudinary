@@ -49,7 +49,8 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
                 
             caminho_absoluto = os.path.abspath(caminho)
             Url = Upload.uploadImagem(caminho_absoluto, Nome_Pasta)
-            Url_Imagem.append(Url[0])
+            Url_Imagem.append(Url)
+            
             print(caminho_absoluto, Url, Url_Imagem)
         # Retorna os principais dados da imagem e o link de upload
         return {
