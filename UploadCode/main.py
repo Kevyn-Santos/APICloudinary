@@ -1,7 +1,5 @@
 #Importação da bibioteca FASTAPI e suas dependencias
-from fastapi import FastAPI, Request, UploadFile, File, Form
-from fastapi.templating import Jinja2Templates as j2t
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 
 # Importação de arquivo com o código de upload do cloudinary
@@ -20,20 +18,14 @@ app = FastAPI() # Cria a instancia do Fastapi
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ou liste os domínios específicos, ex: ["http://localhost:3000"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-#templates = j2t(directory= 'templates') # Indica onde esta a pagina HTML a ser renderizada
-# PaginaHTML = 'Images.html'
+
 os.makedirs(UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
 
-
-# Renderiza a pagina HTML
-# @app.get("/", response_class=HTMLResponse) # Recebe ua resposta em HTML da pagina raiz
-# def renderizarPagina(request: Request):
-#     return templates.TemplateResponse(PaginaHTML, {'request': request}) # Recebe a requisição para renderizar com base no arquivo html
 
 # Retorna dados da imagem e faz Upload no Cloudinary
 @app.post('/enviar')
