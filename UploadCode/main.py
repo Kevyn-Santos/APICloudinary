@@ -12,7 +12,7 @@ import os
 import re
 
 # Configuração
-UPLOAD_FOLDER = 'uploaded_images'
+UPLOAD_FOLDER = '/tmp'
 LIMITE_IMAGENS = 5 # Limite de imagens que podem ser enviadas
 
 app = FastAPI() # Cria a instancia do Fastapi
@@ -50,10 +50,8 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
             caminho_absoluto = os.path.abspath(caminho)
             Url = Upload.uploadImagem(caminho_absoluto, Nome_Pasta)
             Url_Imagem.append(Url[0])
-        
+            os.remove(caminho)
         # Retorna os principais dados da imagem e o link de upload
         return {
-            'nomes das imagens': NomeImagem,
             'link das imagens': [link for link in Url_Imagem],
-            'pasta salva': Url[1]
             }

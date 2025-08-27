@@ -31,5 +31,4 @@ def uploadImagem(caminho: str, Pasta: str):
         )
      
     URL = upload_result['secure_url']
-    pasta = upload_result['asset_folder']
-    return URL, pasta
+    return URL
