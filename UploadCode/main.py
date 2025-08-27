@@ -2,6 +2,7 @@
 from fastapi import FastAPI, Request, UploadFile, File, Form
 from fastapi.templating import Jinja2Templates as j2t
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 # Importação de arquivo com o código de upload do cloudinary
 import UploadCode.Upload as Upload
@@ -16,6 +17,14 @@ UPLOAD_FOLDER = '/tmp'
 LIMITE_IMAGENS = 5 # Limite de imagens que podem ser enviadas
 
 app = FastAPI() # Cria a instancia do Fastapi
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ou liste os domínios específicos, ex: ["http://localhost:3000"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 #templates = j2t(directory= 'templates') # Indica onde esta a pagina HTML a ser renderizada
 # PaginaHTML = 'Images.html'
 os.makedirs(UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
