@@ -17,14 +17,14 @@ LIMITE_IMAGENS = 5 # Limite de imagens que podem ser enviadas
 
 app = FastAPI() # Cria a instancia do Fastapi
 templates = j2t(directory= 'templates') # Indica onde esta a pagina HTML a ser renderizada
-PaginaHTML = 'Images.html'
+# PaginaHTML = 'Images.html'
 os.makedirs(UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
 
 
 # Renderiza a pagina HTML
-@app.get("/", response_class=HTMLResponse) # Recebe ua resposta em HTML da pagina raiz
-def renderizarPagina(request: Request):
-    return templates.TemplateResponse(PaginaHTML, {'request': request}) # Recebe a requisição para renderizar com base no arquivo html
+# @app.get("/", response_class=HTMLResponse) # Recebe ua resposta em HTML da pagina raiz
+# def renderizarPagina(request: Request):
+#     return templates.TemplateResponse(PaginaHTML, {'request': request}) # Recebe a requisição para renderizar com base no arquivo html
 
 # Retorna dados da imagem e faz Upload no Cloudinary
 @app.post('/enviar')
