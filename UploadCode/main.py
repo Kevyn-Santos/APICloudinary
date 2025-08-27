@@ -16,7 +16,7 @@ UPLOAD_FOLDER = '/tmp'
 LIMITE_IMAGENS = 5 # Limite de imagens que podem ser enviadas
 
 app = FastAPI() # Cria a instancia do Fastapi
-templates = j2t(directory= 'templates') # Indica onde esta a pagina HTML a ser renderizada
+#templates = j2t(directory= 'templates') # Indica onde esta a pagina HTML a ser renderizada
 # PaginaHTML = 'Images.html'
 os.makedirs(UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
 
@@ -50,7 +50,7 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
             caminho_absoluto = os.path.abspath(caminho)
             Url = Upload.uploadImagem(caminho_absoluto, Nome_Pasta)
             Url_Imagem.append(Url[0])
-            os.remove(caminho)
+            
         # Retorna os principais dados da imagem e o link de upload
         return {
             'link das imagens': [link for link in Url_Imagem],
