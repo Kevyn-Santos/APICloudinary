@@ -32,7 +32,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as i
 def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = Form(...)):
 
     # Padronização de nomes de pastas
-    Nome_Pasta = re.sub(r'\s+', '_', re.sub(r'[^a-zA-Z\s]', '', Nome_Pasta)).lower().strip('_') # Remove caracteres especiais, números e espaços, deixando apenas letras minúsculas e underscores
+    Nome_Pasta = re.sub(r'\s+', '_', re.sub(r'\d+', '', Nome_Pasta)).lower().strip('_') # Remove caracteres especiais, números e espaços, deixando apenas letras minúsculas e underscores
 
     if len(Imagem) > LIMITE_IMAGENS: # Verifica se o número de imagens é maior que 5
         return {'status': 'erro', 'mensagem': 'Você pode enviar no máximo 5 imagens.'}
