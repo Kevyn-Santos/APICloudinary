@@ -42,7 +42,7 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
     else:
 
         # Cria uma lista com os nomes dos arquivos e seus caminhos
-        NomeImagem =[nomes.filename for nomes in Imagem]
+        NomeImagem =[nomes.filename for nomes in Imagem if nomes.filename]
         caminhoImagem = [os.path.join(UPLOAD_FOLDER, nome) for nome in NomeImagem]
         Url_Imagem = []
 
