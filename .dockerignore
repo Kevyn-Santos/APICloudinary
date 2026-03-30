@@ -1,0 +1,6 @@
+.venv
+vercel.json
+.gitignore
+*.html
+.idea/
+.venv/

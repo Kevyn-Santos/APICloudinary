@@ -1,14 +1,17 @@
 #Importação da bibioteca FASTAPI e suas dependencias
-from fastapi import FastAPI, UploadFile, File, Form
+from fastapi import FastAPI, APIRouter,UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 
 # Importação de arquivo com o código de upload do cloudinary
-import UploadCode.Upload as Upload
+from Upload.models.Upload import uploadImagem
+from Upload.models.Models import imagem
+from Core.Settings import configs
 
 # Bibliotecas para manipulação de arquivos de sistema
 import shutil 
 import os
 import re
+
 
 # Configuração
 UPLOAD_FOLDER = '/tmp'
@@ -16,13 +19,13 @@ LIMITE_IMAGENS = 5 # Limite de imagens que podem ser enviadas
 
 app = FastAPI() # Cria a instancia do Fastapi
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 os.makedirs(UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
 
@@ -49,7 +52,7 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
                 shutil.copyfileobj(imagem_item.file, buffer)
                 
             caminho_absoluto = os.path.abspath(caminho)
-            Url = Upload.uploadImagem(caminho_absoluto, Nome_Pasta)
+            Url = uploadImagem(caminho_absoluto, Nome_Pasta)
             Url_Imagem.append(Url)
             
         # Retorna os principais dados da imagem e o link de upload
