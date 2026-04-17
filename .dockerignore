@@ -4,3 +4,4 @@ vercel.json
 *.html
 .idea/
 .venv/
+*.md

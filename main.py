@@ -3,8 +3,8 @@ from fastapi import FastAPI, APIRouter,UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 
 # Importação de arquivo com o código de upload do cloudinary
-from Upload.models.Upload import uploadImagem
-from Upload.models.Models import imagem
+from Services.Upload import uploadImagem
+from Upload.models.imageModels import Imagem
 from Core.Settings import configs
 
 # Bibliotecas para manipulação de arquivos de sistema
@@ -13,11 +13,10 @@ import os
 import re
 
 
-# Configuração
-UPLOAD_FOLDER = '/tmp'
-LIMITE_IMAGENS = 5 # Limite de imagens que podem ser enviadas
-
-app = FastAPI() # Cria a instancia do Fastapi
+app = FastAPI(
+    title=configs.PROJECT_NAME,
+    description=configs.DESCRIPTION
+) # Cria a instancia do Fastapi
 
 # app.add_middleware(
 #     CORSMiddleware,
@@ -27,7 +26,7 @@ app = FastAPI() # Cria a instancia do Fastapi
 #     allow_headers=["*"],
 # )
 
-os.makedirs(UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
+os.makedirs(configs.UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
 
 
 # Retorna dados da imagem e faz Upload no Cloudinary
@@ -37,13 +36,13 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
     # Padronização de nomes de pastas
     Nome_Pasta = re.sub(r'\s+', '_', re.sub(r'\d+', '', Nome_Pasta)).lower().strip('_') # Remove caracteres especiais, números e espaços, deixando apenas letras minúsculas e underscores
 
-    if len(Imagem) > LIMITE_IMAGENS: # Verifica se o número de imagens é maior que 5
+    if len(Imagem) > configs.LIMITE_IMAGENS: # Verifica se o número de imagens é maior que 5
         return {'status': 'erro', 'mensagem': 'Você pode enviar no máximo 5 imagens.'}
     else:
 
         # Cria uma lista com os nomes dos arquivos e seus caminhos
         NomeImagem =[nomes.filename for nomes in Imagem if nomes.filename]
-        caminhoImagem = [os.path.join(UPLOAD_FOLDER, nome) for nome in NomeImagem]
+        caminhoImagem = [os.path.join(configs.UPLOAD_FOLDER, nome) for nome in NomeImagem]
         Url_Imagem = []
 
         # Itera sobre cada imagem, salva em disco e faz o upload para o Cloudinary
@@ -52,6 +51,7 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
                 shutil.copyfileobj(imagem_item.file, buffer)
                 
             caminho_absoluto = os.path.abspath(caminho)
+            
             Url = uploadImagem(caminho_absoluto, Nome_Pasta)
             Url_Imagem.append(Url)
             

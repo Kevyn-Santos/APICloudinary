@@ -3,12 +3,15 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
-        env_file='../.env',
+        env_file='./.env',
         env_ignore_empty=False
     )
 
-    UPLOAD_FOLDER = '/tmp'
-    LIMITE_IMAGENS = 5
+    PROJECT_NAME: str ='Cloudinary Image Sender'
+    DESCRIPTION: str= 'A modular API builded to send images to cloudinary'
+
+    UPLOAD_FOLDER: str = '/tmp'
+    LIMITE_IMAGENS: int = 5
 
     CLOUD_NAME: str
     API_KEY: str

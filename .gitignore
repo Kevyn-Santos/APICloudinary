@@ -3,3 +3,4 @@ templates/
 .venv/
 .env
 *.html
+*.md
