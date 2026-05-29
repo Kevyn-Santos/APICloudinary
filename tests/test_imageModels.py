@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import AsyncMock, MagicMock
 
-from Upload.models.imageModels import Imagem
+from src.models.imageModels import Imagem
 
 
 def make_upload_file(content: bytes, filename: str) -> MagicMock:

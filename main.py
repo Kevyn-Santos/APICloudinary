@@ -3,9 +3,9 @@ from fastapi import FastAPI, APIRouter,UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 
 # Importação de arquivo com o código de upload do cloudinary
-from Services.Upload import uploadImagem
-from Upload.models.imageModels import Imagem
-from Core.Settings import configs
+from src.Services.Upload import uploadImagem
+from src.models.imageModels import Imagem
+from src.Core.Settings import configs
 
 # Bibliotecas para manipulação de arquivos de sistema
 import shutil 
@@ -18,13 +18,13 @@ app = FastAPI(
     description=configs.DESCRIPTION
 ) # Cria a instancia do Fastapi
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 os.makedirs(configs.UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
 

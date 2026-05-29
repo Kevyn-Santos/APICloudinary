@@ -16,7 +16,7 @@ sys.modules["cloudinary"] = MagicMock()
 sys.modules["cloudinary.uploader"] = MagicMock()
 
 # ── Import do módulo testado ──────────────────────────────────────────────────
-from Services.Upload import parse_images  # noqa: E402
+from src.Services.Upload import parse_images  # noqa: E402
 from fastapi import HTTPException          # noqa: E402
 
 MB = 1024 * 1024

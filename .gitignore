@@ -4,3 +4,5 @@ templates/
 .env
 *.html
 *.md
+docker-compose.yml
+*.pyc
