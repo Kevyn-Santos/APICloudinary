@@ -29,8 +29,9 @@ async def parse_images(imagem: Imagem):
         
         return filePath, imagem.dirName
 
+
 # Principal função que executa o upload de arquivos para o cloudinary
-def uploadImagem(caminho: str, Pasta: str) -> list[str]:
+def uploadImage(caminho: str, Pasta: str) -> list[str]: # Caminho = Filepath
 
     # Faz o upload utilizando os métodos próprios da biblioteca
     upload_result: dict[str, str] = upload( 

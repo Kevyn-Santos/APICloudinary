@@ -1,11 +1,12 @@
 #Importação da bibioteca FASTAPI e suas dependencias
-from fastapi import FastAPI, APIRouter,UploadFile, File, Form
+from fastapi import FastAPI, APIRouter, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 
 # Importação de arquivo com o código de upload do cloudinary
-from src.Services.Upload import uploadImagem
+from src.Services.Upload import uploadImage
 from src.models.imageModels import Imagem
 from src.Core.Settings import configs
+from src.Routes import Send
 
 # Bibliotecas para manipulação de arquivos de sistema
 import shutil 
@@ -52,10 +53,12 @@ def detalhes_de_Imagem(Imagem: list[UploadFile] = File(...), Nome_Pasta: str = F
                 
             caminho_absoluto = os.path.abspath(caminho)
             
-            Url = uploadImagem(caminho_absoluto, Nome_Pasta)
+            Url = uploadImage(caminho_absoluto, Nome_Pasta)
             Url_Imagem.append(Url)
             
         # Retorna os principais dados da imagem e o link de upload
         return {
             'link das imagens': [link for link in Url_Imagem],
             }
+
+app.include_router(Send.router)
