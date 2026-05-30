@@ -5,3 +5,4 @@ vercel.json
 .idea/
 .venv/
 *.md
+.env

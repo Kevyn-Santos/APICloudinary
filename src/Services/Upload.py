@@ -31,7 +31,7 @@ async def parse_images(imagem: Imagem):
 
 
 # Principal função que executa o upload de arquivos para o cloudinary
-def uploadImage(caminho: str, Pasta: str) -> list[str]: # Caminho = Filepath
+def uploadImage(caminho: str, Pasta: str): # Caminho = Filepath
 
     # Faz o upload utilizando os métodos próprios da biblioteca
     upload_result: dict[str, str] = upload( 
@@ -44,4 +44,4 @@ def uploadImage(caminho: str, Pasta: str) -> list[str]: # Caminho = Filepath
         )
      
     # URL = upload_result['secure_url']
-    return list(upload_result['secure_url'])
+    return upload_result['secure_url']

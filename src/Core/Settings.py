@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import (AnyUrl, BeforeValidator, computed_field)
 from cloudinary import config
-from typing import Annotated
+from typing import Annotated, Any
 
 # limpa os IP's que virão de CORS
 def cors_config(Urls: Any) -> list[str]: #type: ignore
@@ -17,7 +17,7 @@ def cors_config(Urls: Any) -> list[str]: #type: ignore
 class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
-        env_file='./.env',
+        env_file='../.env',
         env_ignore_empty=False
     )
 

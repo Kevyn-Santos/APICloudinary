@@ -1,95 +1,123 @@
 import os
 import sys
-import unittest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import MagicMock
 
-# ── Variáveis de ambiente para testes ────────────────────────────────────────
-# Definidas antes do import de Services.Upload para que Settings() não falhe
-# por ausência das credenciais reais.
+# Mock de credenciais e cloudinary antes de qualquer import de src.*
 os.environ.setdefault("CLOUD_NAME", "test_cloud")
-os.environ.setdefault("API_KEY", "test_api_key")
-os.environ.setdefault("API_SECRET", "test_api_secret")
-
-# ── Mock do cloudinary ────────────────────────────────────────────────────────
-# cloudinary.uploader faz chamadas de rede na inicialização do módulo.
+os.environ.setdefault("API_KEY", "test_key")
+os.environ.setdefault("API_SECRET", "test_secret")
 sys.modules["cloudinary"] = MagicMock()
 sys.modules["cloudinary.uploader"] = MagicMock()
 
-# ── Import do módulo testado ──────────────────────────────────────────────────
-from src.Services.Upload import parse_images  # noqa: E402
-from fastapi import HTTPException          # noqa: E402
+import pytest
+from fastapi import HTTPException
+from src.Services.Upload import parse_images, uploadImage
 
 MB = 1024 * 1024
 
 
-def make_imagem(size_bytes: int, filenames: list[str]) -> MagicMock:
-    upload_files = [MagicMock(filename=name) for name in filenames]
-    imagem = MagicMock()
-    imagem.Image = upload_files
-    imagem.size_image = AsyncMock(return_value=size_bytes)
-    return imagem
+@pytest.fixture
+def make_imagem(mocker):
+    def _make(size_bytes: int, filenames: list[str], dir_name: str = "pasta_teste"):
+        upload_files = [mocker.MagicMock(filename=name) for name in filenames]
+        imagem = mocker.MagicMock()
+        imagem.Image = upload_files
+        imagem.size_image = mocker.AsyncMock(return_value=size_bytes)
+        imagem.dirName = dir_name
+        return imagem
+    return _make
 
 
-class TestParseImages(unittest.IsolatedAsyncioTestCase):
+# ── parse_images ───────────────────────────────────────────────────────────────
 
-    async def test_retorna_lista_de_nomes_tres_imagens(self):
-        """Envio válido: 3 imagens abaixo de 100MB."""
-        imagem = make_imagem(5 * MB, ["foto1.jpg", "foto2.jpg", "foto3.jpg"])
+@pytest.mark.asyncio
+async def test_parse_images_retorna_tuple_filepaths_e_dirname(make_imagem):
+    imagem = make_imagem(5 * MB, ["foto1.jpg", "foto2.jpg", "foto3.jpg"])
 
-        resultado = await parse_images(imagem)
+    file_paths, dir_name = await parse_images(imagem)
 
-        print("\n--- Nomes retornados (3 imagens válidas) ---")
-        for nome in resultado:
-            print(f"  {nome}")
-
-        self.assertEqual(resultado, ["foto1.jpg", "foto2.jpg", "foto3.jpg"])
-
-    async def test_retorna_lista_de_nomes_cinco_imagens(self):
-        """Envio válido: 5 imagens abaixo de 100MB."""
-        imagem = make_imagem(10 * MB, ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg"])
-
-        resultado = await parse_images(imagem)
-
-        print("\n--- Nomes retornados (5 imagens válidas) ---")
-        for nome in resultado:
-            print(f"  {nome}")
-
-        self.assertEqual(len(resultado), 5)
-
-    async def test_erro_mais_de_cinco_imagens(self):
-        """Mais de 5 imagens deve levantar HTTPException 500."""
-        imagem = make_imagem(1 * MB, ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg", "f.jpg"])
-
-        print("\n--- Erro: mais de 5 imagens ---")
-        with self.assertRaises(HTTPException) as ctx:
-            await parse_images(imagem)
-
-        print(f"  HTTPException {ctx.exception.status_code}: {ctx.exception.detail}")
-        self.assertEqual(ctx.exception.status_code, 500)
-
-    async def test_erro_imagem_acima_de_100mb(self):
-        """Imagem acima de 100MB deve levantar HTTPException 500."""
-        imagem = make_imagem(101 * MB, ["pesada.jpg", "pesada2.jpg"])
-
-        print("\n--- Erro: imagem acima de 100MB ---")
-        with self.assertRaises(HTTPException) as ctx:
-            await parse_images(imagem)
-
-        print(f"  HTTPException {ctx.exception.status_code}: {ctx.exception.detail}")
-        self.assertEqual(ctx.exception.status_code, 500)
-
-    async def test_imagem_exatamente_100mb_e_aceita(self):
-        """Imagem com exatamente 100MB deve ser aceita (limite é exclusivo)."""
-        imagem = make_imagem(100 * MB, ["limite.jpg", "limite2.jpg"])
-
-        resultado = await parse_images(imagem)
-
-        print("\n--- Imagem no limite exato de 100MB ---")
-        for nome in resultado:
-            print(f"  {nome}")
-
-        self.assertIsInstance(resultado, list)
+    assert isinstance(file_paths, list)
+    assert len(file_paths) == 3
+    assert all("foto" in p for p in file_paths)
+    assert dir_name == "pasta_teste"
 
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+@pytest.mark.asyncio
+async def test_parse_images_filtra_filenames_vazios(make_imagem):
+    imagem = make_imagem(5 * MB, ["foto1.jpg", "", "foto3.jpg"])
+    # Ajusta manualmente: o mock com filename="" deve ser filtrado
+    imagem.Image[1].filename = ""
+
+    file_paths, _ = await parse_images(imagem)
+
+    assert len(file_paths) == 2
+
+
+@pytest.mark.asyncio
+async def test_parse_images_mais_de_5_imagens_levanta_httperror(make_imagem):
+    imagem = make_imagem(1 * MB, ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg", "f.jpg"])
+
+    with pytest.raises(HTTPException) as exc_info:
+        await parse_images(imagem)
+
+    assert exc_info.value.status_code == 500
+
+
+@pytest.mark.asyncio
+async def test_parse_images_imagem_acima_100mb_levanta_httperror(make_imagem):
+    imagem = make_imagem(101 * MB, ["pesada.jpg"])
+
+    with pytest.raises(HTTPException) as exc_info:
+        await parse_images(imagem)
+
+    assert exc_info.value.status_code == 500
+
+
+@pytest.mark.asyncio
+async def test_parse_images_exatamente_100mb_e_aceito(make_imagem):
+    imagem = make_imagem(100 * MB, ["limite.jpg", "limite2.jpg"])
+
+    result = await parse_images(imagem)
+
+    assert result is not None
+
+
+@pytest.mark.asyncio
+async def test_parse_images_exatamente_5_imagens_e_aceito(make_imagem):
+    imagem = make_imagem(5 * MB, ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg"])
+
+    file_paths, _ = await parse_images(imagem)
+
+    assert len(file_paths) == 5
+
+
+# ── uploadImage ────────────────────────────────────────────────────────────────
+
+def test_upload_image_chama_cloudinary_com_parametros_corretos(mocker):
+    mock_upload = mocker.patch("src.Services.Upload.upload")
+    mock_upload.return_value = {"secure_url": "https://res.cloudinary.com/test/image.jpg"}
+
+    uploadImage("/tmp/foto.jpg", "minha_pasta")
+
+    mock_upload.assert_called_once_with(
+        "/tmp/foto.jpg",
+        use_filename=mocker.ANY,
+        unique_filename=mocker.ANY,
+        overwrite=mocker.ANY,
+        asset_folder="minha_pasta",
+        media_metadata=mocker.ANY,
+    )
+
+
+def test_upload_image_retorna_lista_de_chars_da_url(mocker):
+    """Documenta comportamento atual: list(url) retorna lista de caracteres."""
+    mock_upload = mocker.patch("src.Services.Upload.upload")
+    url = "https://res.cloudinary.com/test/img.jpg"
+    mock_upload.return_value = {"secure_url": url}
+
+    resultado = uploadImage("/tmp/foto.jpg", "pasta")
+
+    # Comportamento atual: string → lista de caracteres (bug conhecido)
+    assert resultado == list(url)
+    assert isinstance(resultado, list)
+    assert resultado[0] == "h"
