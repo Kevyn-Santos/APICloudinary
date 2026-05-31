@@ -8,6 +8,7 @@ class Imagem(BaseModel):
 
     def sanitize_Name(self):
         self.dirName = sub(r'\s+', '_', sub(r'\d+', '', self.dirName)).lower().strip('_')
+        return self.dirName
     
     async def size_image(self) -> int:
         if not self.Image:

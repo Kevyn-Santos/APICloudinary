@@ -6,3 +6,4 @@ vercel.json
 .venv/
 *.md
 .env
+tests/

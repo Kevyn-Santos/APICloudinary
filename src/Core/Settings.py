@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str ='Cloudinary Image Sender'
     DESCRIPTION: str= 'A modular API builded to send images to cloudinary'
 
-    UPLOAD_FOLDER: str = '/tmp'
+    UPLOAD_FOLDER: str =  'tmp'
     LIMITE_IMAGENS: int = 5
 
     CLOUD_NAME: str
@@ -40,10 +40,10 @@ class Settings(BaseSettings):
         return [str(origins) for origins in self.HOSTS] + self.COMMONS_URLS # type: ignore
     
 
-    USE_FILENAME: bool | bool=True
-    UNIQUE_FILENAME: bool | bool= False
-    OVERWRITE: bool | bool=True
-    MEDIA_METADATA: bool | bool=True
+    USE_FILENAME: bool=True
+    UNIQUE_FILENAME: bool= False
+    OVERWRITE: bool=True
+    MEDIA_METADATA: bool=True   
 
     
 

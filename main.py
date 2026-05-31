@@ -5,9 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.Core.Settings import configs
 from src.Routes import Send
 
-# Bibliotecas para manipulação de arquivos de sistema
-import os
-
 
 app = FastAPI(
     title=configs.PROJECT_NAME,
@@ -21,6 +18,4 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-os.makedirs(configs.UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
-
 app.include_router(Send.router)
