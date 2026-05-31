@@ -1,0 +1,11 @@
+.venv
+vercel.json
+.gitignore
+*.html
+.idea/
+.venv/
+*.md
+.env
+tests/
+.pytest_cache
+**/__pycache__
