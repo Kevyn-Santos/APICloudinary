@@ -10,7 +10,6 @@ from typing import Any
 import os
 
 async def parse_images(imagem: Imagem):
-    os.makedirs(configs.UPLOAD_FOLDER, exist_ok = True) # Cria uma pasta para armazenar as imagens
     
     if len(imagem.Image) > configs.LIMITE_IMAGENS:
         raise HTTPException(422, "Você pode enviar no máximo 5 imagens.")
@@ -24,10 +23,6 @@ async def parse_images(imagem: Imagem):
 
 # Principal função que executa o upload de arquivos para o cloudinary
 def uploadImage(caminho: Any, Pasta: str):
-
-    print(f"""
-          \n\nCaminho recebido: {caminho}({type(caminho)}), 
-          pasta recebida: {Pasta}({type(Pasta)})\n\n""")
 
     # Faz o upload utilizando os métodos próprios da biblioteca
     upload_result: dict[str, str] = upload( 

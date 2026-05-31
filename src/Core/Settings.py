@@ -24,7 +24,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str ='Cloudinary Image Sender'
     DESCRIPTION: str= 'A modular API builded to send images to cloudinary'
 
-    UPLOAD_FOLDER: str =  'tmp'
     LIMITE_IMAGENS: int = 5
 
     CLOUD_NAME: str
