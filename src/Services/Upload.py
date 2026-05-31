@@ -17,7 +17,6 @@ async def parse_images(imagem: Imagem):
     elif await imagem.size_image() > 100 * 1024 * 1024:
         raise HTTPException(422, "As imagens não podem exceder 100MB")
     else:
-        # fileName = [nomes.filename for nomes in imagem.Image if nomes.filename]
         file = [img.file for img in imagem.Image if img.file]
         
         return file, imagem.sanitize_Name()
