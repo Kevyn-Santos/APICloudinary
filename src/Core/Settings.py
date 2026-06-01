@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     DESCRIPTION: str= 'A modular API builded to send images to cloudinary'
 
     LIMITE_IMAGENS: int = 5
+    LIMITE_TEMPO: int = 10
 
     CLOUD_NAME: str
     API_KEY: str
