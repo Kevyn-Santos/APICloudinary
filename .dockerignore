@@ -9,6 +9,5 @@ vercel.json
 tests/
 .pytest_cache
 **/__pycache__
-*.txt
-.dockerignore
+log_dev_tests.txt
 docker-compose.yml
