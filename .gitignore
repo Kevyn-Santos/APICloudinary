@@ -2,11 +2,10 @@ templates/
 .idea/
 .venv/
 .env
+.idea
+**.pyc
+**.xml
 *.html
 *.md
-docker-compose.yml
-*.pyc
 *.txt
-.pytest_cache
-**/__pycache__
-vercel.json
+docker-compose.yml
