@@ -7,5 +7,6 @@ templates/
 **.xml
 *.html
 *.md
+!README.md
 *.txt
 docker-compose.yml
