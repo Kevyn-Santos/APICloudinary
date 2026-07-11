@@ -10,8 +10,8 @@ os.environ.setdefault("API_SECRET", "test_secret")
 sys.modules["cloudinary"] = MagicMock()
 sys.modules["cloudinary.uploader"] = MagicMock()
 
-import pytest
-from src.Core.security import rate_Limiter
+import pytest #noqa: E402
+from src.Core.security import rate_Limiter #noqa: E402
 
 
 @pytest.fixture(autouse=True)
