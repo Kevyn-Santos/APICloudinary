@@ -3,6 +3,7 @@ from pydantic import (AnyUrl, BeforeValidator, computed_field)
 from cloudinary import config
 from typing import Annotated, Any
 
+
 # limpa os IP's que virão de CORS
 def cors_config(Urls: Any) -> list[str]: #type: ignore
     if isinstance(Urls, list):
@@ -23,6 +24,7 @@ class Settings(BaseSettings):
 
     PROJECT_NAME: str ='Cloudinary Image Sender'
     DESCRIPTION: str= 'A modular API builded to send images to cloudinary'
+    DEBUG: bool = True
 
     LIMITE_IMAGENS: int = 5
     LIMITE_TEMPO: int = 10
@@ -39,11 +41,10 @@ class Settings(BaseSettings):
     def sanatize_cors(self) -> list[str]:
         return [str(origins) for origins in self.HOSTS] + self.COMMONS_URLS # type: ignore
     
-
+    # Personalização
     USE_FILENAME: bool=True
     UNIQUE_FILENAME: bool= False
     OVERWRITE: bool=True
-    MEDIA_METADATA: bool=True   
 
     
 

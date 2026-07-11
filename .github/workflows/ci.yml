@@ -1,0 +1,72 @@
+#checkout, linter, tests
+
+name: Base Ci Workflow
+run-name: Cloudinary check
+
+on:
+    push: 
+        branches: [master]
+    pull_request: 
+        branches: [master]
+
+jobs:
+    checks:
+        runs-on: ubuntu-latest
+        timeout-minutes: 3
+        steps:
+            - uses: actions/checkout@v4
+            
+            - name: Download python
+              uses: actions/setup-python@v5
+              with:
+                python-version: 3.12
+            
+            - name: instalar dependencias
+              run: |
+                pip install --no-cache-dir --upgrade pip
+                pip install --no-cache-dir -r requirements.txt
+            
+            - name: Cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/pip
+                  key: pip-${{ hashFiles('requirements.txt') }}
+
+            - name: Executar Linter
+              run: ruff check --fix-only .
+              continue-on-error: true
+            
+            - name: Executar testes
+              run: |
+                pytest -v
+                --cov=src
+                --cov-report=term-missing
+                --cov-fail-under=90
+    
+    buildDockerImage:
+        runs-on: ubuntu-latest
+        timeout-minutes: 3
+        needs: checks
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Extrair metadados de imagem Docker
+              id: meta
+              uses: docker/metadata-action@v6
+              with:
+                images: ${{vars.DOCKER_USERNAME}}/cloudinary_api
+            
+            - name: Login Docker
+              uses: docker/login-action@v4
+              with:
+                username: ${{vars.DOCKER_USERNAME}}
+                password: ${{vars.DOCKER_PASSWORD}}
+            
+            - name: Build e Push Docker
+              uses: docker/build-push-action@v7
+              with:
+                push: ${{github.event_name != 'pull_request'}}
+                tags: ${{steps.meta.outputs.tags}}
+                annotations: ${{steps.meta.outputs.annotations}}
+                provenance: true
+                sbom: true

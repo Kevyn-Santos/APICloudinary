@@ -7,7 +7,6 @@ from src.models.imageModels import Imagem
 
 from fastapi import HTTPException
 from typing import Any
-import os
 
 async def parse_images(imagem: Imagem):
     
@@ -30,8 +29,7 @@ def uploadImage(caminho: Any, Pasta: str):
         use_filename = configs.USE_FILENAME,
         unique_filename= configs.UNIQUE_FILENAME,
         overwrite = configs.OVERWRITE,
-        asset_folder = Pasta,
-        media_metadata = configs.MEDIA_METADATA,
+        asset_folder = Pasta
         )
 
     return upload_result['secure_url']

@@ -1,14 +1,38 @@
-.venv
+# Ambiente virtual
+.venv/
+
+# IDE
+.idea/
+
+# Cache do Python
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Cache do Ruff
+.ruff_cache/
+**/.ruff_cache/
+
+# Arquivos de ambiente (exceto sample.env)
+*.env
+!sample.env
+
+# Markdown (exceto README e dockerhub.md)
+*.md
+!README.md
+!dockerhub.md
+
+# HTML
+*.html
+
+# Diretório misc
+misc/
+
+# Outros
 vercel.json
 .gitignore
-*.html
-.idea/
-.venv/
-*.md
-.env
-tests/
-.pytest_cache
-**/__pycache__
-Log_dev_tests.txt
-docker-compose.yml
 .git
+tests/
+.pytest_cache/
+docker-compose.yml
+.coverage

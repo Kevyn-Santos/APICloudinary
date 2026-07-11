@@ -38,7 +38,7 @@ async def test_parse_images_retorna_tuple_filepaths_e_dirname(make_imagem):
 
     assert isinstance(file_paths, list)
     assert len(file_paths) == 3
-    assert all("foto" in p for p in file_paths)
+    assert all("foto" in p for p in file_paths) #type: ignore
     assert dir_name == "pasta_teste"
 
 
@@ -103,8 +103,7 @@ def test_upload_image_chama_cloudinary_com_parametros_corretos(mocker):
         use_filename=mocker.ANY,
         unique_filename=mocker.ANY,
         overwrite=mocker.ANY,
-        asset_folder="minha_pasta",
-        media_metadata=mocker.ANY,
+        asset_folder="minha_pasta"
     )
 
 

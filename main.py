@@ -20,7 +20,7 @@ app.add_exception_handler(RateLimitExceeded, rate_limit_handler) # type: ignore
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=configs.sanatize_cors,
+    allow_origins= "*" if configs.DEBUG else configs.sanatize_cors,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

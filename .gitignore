@@ -1,11 +1,37 @@
-templates/
-.idea/
+# Ambiente virtual
 .venv/
-.env
-.idea
-**.pyc
-**.xml
-*.html
+
+# IDE
+.idea/
+
+# Cache do Python
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Cache do Ruff
+.ruff_cache/
+**/.ruff_cache/
+
+# Arquivos de ambiente (exceto sample.env)
+*.env
+!sample.env
+
+# Markdown (exceto README e dockerhub.md)
 *.md
+!README.md
+!dockerhub.md
+
+# HTML
+*.html
+
+# Diretório misc
+misc/
+
+# Outros
+templates/
+**.xml
 *.txt
 docker-compose.yml
+.pytest_cache/
+.coverage
