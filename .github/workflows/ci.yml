@@ -20,13 +20,6 @@ jobs:
               uses: actions/setup-python@v5
               with:
                 python-version: 3.12
-                cache: pip
-            
-            - name: Cache
-              uses: actions/cache@v4
-              with:
-                  path: ~/.cache/pip
-                  key: pip-${{ hashFiles('requirements.txt') }}
                 
             - name: instalar dependencias
               run: |
@@ -72,5 +65,3 @@ jobs:
                 annotations: ${{steps.meta.outputs.annotations}}
                 provenance: true
                 sbom: true
-                cache-from: type=gha
-                cache-to: type=gha, mode=max
