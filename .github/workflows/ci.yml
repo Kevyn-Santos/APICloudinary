@@ -5,7 +5,7 @@ run-name: Cloudinary check
 
 on:
     push: 
-        tags: ["V*.*.*"]
+        tags: ["v*.*.*"]
         branches: [master]
     pull_request: 
         branches: [master]
