@@ -5,6 +5,7 @@ run-name: Cloudinary check
 
 on:
     push: 
+        tags: "V*"
         branches: [master]
     pull_request: 
         branches: [master]
@@ -20,11 +21,13 @@ jobs:
               uses: actions/setup-python@v6
               with:
                 python-version: 3.12
+                cache: pip
+                cache-dependecy-path: requirements.txt
                 
             - name: instalar dependencias
               run: |
-                pip install --no-cache-dir --upgrade pip
-                pip install --no-cache-dir -r requirements.txt
+                pip install --upgrade pip
+                pip install -r requirements.txt
 
             - name: Executar Linter
               run: ruff check .
@@ -41,13 +44,18 @@ jobs:
         timeout-minutes: 5
         needs: check
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v7
 
             - name: Extrair metadados de imagem Docker
               id: meta
               uses: docker/metadata-action@v6
               with:
                 images: ${{secrets.DOCKER_USERNAME}}/cloudinary_api
+                tags: |
+                  type=semver,pattern={{version}}
+                  type=semver,pattern={{major}}.{{minor}}
+                  type=sha
+                  type=raw,value=latest,enable={{is_default_branch}}
             
             - name: Login Docker
               if: github.event != 'pull_request'
@@ -65,6 +73,9 @@ jobs:
                 context: .
                 push: ${{github.event_name != 'pull_request'}}
                 tags: ${{steps.meta.outputs.tags}}
+                labels: ${{ steps.meta.outputs.labels }}
                 annotations: ${{steps.meta.outputs.annotations}}
+                cache-from: type=gha
+                cache-to: type=gha, mode=max
                 provenance: true
                 sbom: true
